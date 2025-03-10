@@ -27,7 +27,7 @@ predictions = model.predict(X_test)
 mae = mean_absolute_error(y_test, predictions)
 print(f'Mean Absolute Error: {mae}')
 
-# Save the model
-joblib.dump(model, 'models/model.pkl')
+# # Save the model
+# joblib.dump(model, 'models/model.pkl')
 
-print("Training complete! Model saved to models/model.pkl")
+# print("Training complete! Model saved to models/model.pkl")
