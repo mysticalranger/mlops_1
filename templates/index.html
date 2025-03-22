@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screen Time Wellness Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+        h1, h2 { color: #333; }
+        table { width: 100%; border-collapse: collapse; }
+        table, th, td { border: 1px solid #ddd; }
+        th, td { padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .model-performance-img { max-width: 100%; }
+        .model-performance-img { max-width: 100%; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Screen Time Wellness Dashboard</h1>
+        
+        <div class="card">
+            <h2>Model Performance</h2>
+            {% if plot_url %}
+                <img src="data:image/png;base64,{{ plot_url }}" alt="Model Performance" class="model-performance-img">
+            {% else %}
+                <p>No monitoring data available yet.</p>
+            {% endif %}
+        </div>
+        
+        <div class="card">
+            <h2>Recent Predictions</h2>
+            {% if predictions %}
+                <table>
+                    <tr>
+                        <th>Date</th>
+                        <th>App</th>
+                        <th>Notifications</th>
+                        <th>Times Opened</th>
+                        <th>Predicted Usage</th>
+                        <th>Notification</th>
+                    </tr>
+                    {% for p in predictions %}
+                    <tr>
+                        <td>{{ p.Date }}</td>
+                        <td>{{ p.App }}</td>
+                        <td>{{ p.Notifications }}</td>
+                        <td>{{ p.Times_Opened }}</td>
+                        <td>{{ p.Predicted_Usage }}</td>
+                        <td>{{ p.Notification }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p>No prediction data available yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/riyan/Downloads/project_1/wellness_app_project/mlruns/411192748991730030/6de4862f1bf54291b62aa9d04174bec1/artifacts
+end_time: 1742666432497
+entry_point_name: ''
+experiment_id: '411192748991730030'
+lifecycle_stage: active
+run_id: 6de4862f1bf54291b62aa9d04174bec1
+run_name: screen_time_model_20250322_233014
+run_uuid: 6de4862f1bf54291b62aa9d04174bec1
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1742666416453
+status: 3
+tags: []
+user_id: riyan
