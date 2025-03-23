@@ -15,6 +15,75 @@
         th { background-color: #f2f2f2; }
         .model-performance-img { max-width: 100%; }
         .model-performance-img { max-width: 100%; }
+        .prediction-form {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .input-hint {
+            display: block;
+            font-size: 12px;
+            color: #666;
+            margin-top: 2px;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .result-card {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #2196F3;
+        }
+        .prediction-range {
+            margin-top: 20px;
+        }
+        .range-bar {
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            position: relative;
+            margin: 10px 0;
+        }
+        .range-indicator {
+            width: 12px;
+            height: 30px;
+            background-color: #ff5722;
+            position: absolute;
+            top: -5px;
+            transform: translateX(-50%);
+        }
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -57,6 +126,137 @@
                 <p>No prediction data available yet.</p>
             {% endif %}
         </div>
+
+        <div class="card">
+            <h2>Make Your Own Prediction</h2>
+            <p>Enter values below to predict your screen time:</p>
+            
+            <form id="prediction-form" class="prediction-form">
+                <div class="form-group">
+                    <label for="notifications">Number of Notifications:</label>
+                    <input type="number" id="notifications" name="notifications" min="0" max="100" step="1" required>
+                    <span class="input-hint">Typical range: 0-50</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="times-opened">Times App Opened:</label>
+                    <input type="number" id="times-opened" name="times_opened" min="0" max="50" step="1" required>
+                    <span class="input-hint">Typical range: 0-30</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="day-of-week">Day of Week:</label>
+                    <select id="day-of-week" name="day_of_week" required>
+                        <option value="0">Monday (0)</option>
+                        <option value="1">Tuesday (1)</option>
+                        <option value="2">Wednesday (2)</option>
+                        <option value="3">Thursday (3)</option>
+                        <option value="4">Friday (4)</option>
+                        <option value="5">Saturday (5)</option>
+                        <option value="6">Sunday (6)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="month">Month:</label>
+                    <select id="month" name="month" required>
+                        <option value="1">January (1)</option>
+                        <option value="2">February (2)</option>
+                        <option value="3">March (3)</option>
+                        <option value="4">April (4)</option>
+                        <option value="5">May (5)</option>
+                        <option value="6">June (6)</option>
+                        <option value="7">July (7)</option>
+                        <option value="8">August (8)</option>
+                        <option value="9">September (9)</option>
+                        <option value="10">October (10)</option>
+                        <option value="11">November (11)</option>
+                        <option value="12">December (12)</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn">Predict Usage</button>
+            </form>
+            
+            <div id="prediction-results" style="display: none; margin-top: 20px;">
+                <h3>Prediction Results</h3>
+                <div class="result-card">
+                    <p><strong>Predicted Screen Time:</strong> <span id="result-prediction" class="highlight"></span> minutes</p>
+                    <p><strong>Recommendation:</strong> <span id="result-notification" class="highlight"></span></p>
+                    
+                    <div class="prediction-range">
+                        <h4>Where This Falls in Typical Usage</h4>
+                        <div class="range-bar">
+                            <div class="range-indicator" id="range-indicator"></div>
+                        </div>
+                        <div class="range-labels">
+                            <span class="range-min" id="min-value">0 min</span>
+                            <span class="range-avg" id="avg-value">Average</span>
+                            <span class="range-max" id="max-value">0 min</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <script>
+        document.getElementById('prediction-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const notifications = document.getElementById('notifications').value;
+            const timesOpened = document.getElementById('times-opened').value;
+            const dayOfWeek = document.getElementById('day-of-week').value;
+            const month = document.getElementById('month').value;
+            
+            // Create request payload
+            const data = {
+                notifications: parseFloat(notifications),
+                times_opened: parseFloat(timesOpened),
+                day_of_week: parseInt(dayOfWeek),
+                month: parseInt(month)
+            };
+            
+            // Send prediction request
+            fetch('/api/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                // Show results section
+                document.getElementById('prediction-results').style.display = 'block';
+                
+                // Update prediction results
+                document.getElementById('result-prediction').textContent = result.predicted_usage_minutes;
+                document.getElementById('result-notification').textContent = result.notification;
+                
+                // Fetch model range information to show context
+                fetch('/api/model-range')
+                    .then(response => response.json())
+                    .then(range => {
+                        // Update range display
+                        document.getElementById('min-value').textContent = range.min + ' min';
+                        document.getElementById('max-value').textContent = range.max + ' min';
+                        document.getElementById('avg-value').textContent = 'Avg: ' + range.avg + ' min';
+                        
+                        // Position the indicator based on prediction
+                        const percentage = ((result.predicted_usage_minutes - range.min) / (range.max - range.min)) * 100;
+                        document.getElementById('range-indicator').style.left = percentage + '%';
+                    })
+                    .catch(error => {
+                        console.error('Error fetching range:', error);
+                    });
+            })
+            .catch(error => {
+                console.error('Error making prediction:', error);
+                alert('Failed to make prediction. Please try again.');
+            });
+        });
+    </script>
 </body>
 </html>
